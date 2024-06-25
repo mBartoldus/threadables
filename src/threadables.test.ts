@@ -93,3 +93,21 @@ Deno.test('threadable: should be able to declare private', () => {
     //@ts-ignore
     assertStrictEquals(instance.x, undefined)
 })
+
+Deno.test('threadable: prepareObject should declare properties and allocate data', () => {
+    const personMetadata: threadables.ObjectMetadata = {
+        favoriteDrink: { type: ['water', 'tea', 'coffee'] },
+        preferredTemperature: { type: 'Float32' }
+    }
+
+    const person = threadables.prepareObject({}, personMetadata)
+    person.favoriteDrink = 'tea'
+    person.preferredTemperature = 50.5
+
+    const samePerson = threadables.declare({}, personMetadata)
+    threadables.accept(samePerson, threadables.share(person))
+
+    assertStrictEquals(samePerson.favoriteDrink, 'tea')
+    assertStrictEquals(samePerson.preferredTemperature, 50.5)
+    assertStrictEquals(threadables.share(samePerson), threadables.share(person))
+})
