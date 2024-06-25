@@ -53,7 +53,6 @@ export function allocateData(instance: any, l = instance[_byteLength]) {
 
 /**
  * Defines an object's threadable properties and allocates data.
- * 
  * > If the object is an instance of a class with inherited threadable properties, DO NOT USE THIS FUNCTION. Instead:
  * > - ```declare``` threadable properties on the class prototypes
  * > - call ```allocateData(this, new.target.prototype)``` in the base class constructor.
@@ -83,7 +82,8 @@ export function set(instance: any, k: string, value: any) {
 }
 
 /**
- * Manually sets multiple threadable properties.
+ * Manually sets multiple threadable properties, including readonly ones.
+ * > Does NOT bypass checks. To bypass checks on a particular property, use ```set```
  */
 export function assign(instance: any, values: Record<string, any> = {}) {
     for (const k in values) {
