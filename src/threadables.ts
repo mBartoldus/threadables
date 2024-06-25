@@ -40,14 +40,10 @@ export function declare(
 
 /**
  * Allocates data for an object with threadable properties.
- * May be called before ```declare``` so long as byteLength is provided.
+ * May be called before ```declare``` so long as target prototype is provided.
  */
-export function allocateData(instance: any): void
-export function allocateData(instance: any, targetPrototype: any): void
-export function allocateData(instance: any, byteLength: number): void
-export function allocateData(instance: any, l = instance[_byteLength]) {
-    const byteLength = typeof l === 'number' ? l : l[_byteLength]
-    const sab = new SharedArrayBuffer(byteLength)
+export function allocateData(instance: any, targetPrototype = instance) {
+    const sab = new SharedArrayBuffer(targetPrototype[_byteLength])
     instance[_data] = new DataView(sab)
 }
 
