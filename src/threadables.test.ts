@@ -128,3 +128,25 @@ Deno.test('threadable: manifestObject should declare properties and accept data'
     assertStrictEquals(samePerson.preferredTemperature, 50.5)
     assertStrictEquals(threadables.share(samePerson), threadables.share(person))
 })
+
+Deno.test('threadable: data should be shared across workers', async () => {
+
+    const worker = threadables.makeWorker(`
+        import * as threadables from '${import.meta.resolve('./mod.ts')}'
+
+        addEventListener('message', e=>{
+            const x = threadables.manifestObject(e.data, { x: { type: 'Float32' } })
+            x.x = Math.random()
+            postMessage(x.x)
+        })
+    `)
+
+    const x = threadables.prepareObject({ x: { type: 'Float32' } })
+    x.x = Math.random()
+
+    const promise = new Promise(resolve => { worker.onmessage = e => resolve(e.data) })
+    worker.postMessage(threadables.share(x))
+    assertStrictEquals(await promise, x.x)
+
+    worker.terminate()
+})
