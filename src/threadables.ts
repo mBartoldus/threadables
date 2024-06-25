@@ -101,6 +101,7 @@ export function share(instance: any): DataView {
 
 /**
  * Accepts a dataview to be used for object's threadable properties.
+ * > Must be used in conjunction with `declare`
  */
 export function accept<Th extends object>(instance: Th, data: DataView): Th {
     (instance as any)[_data] = data
