@@ -5,7 +5,7 @@ function testThreadableType(
     type: any,
     value: any
 ) {
-    const th = threadables.prepareThreadables({}, { value: { type } })
+    const th = threadables.declare({}, { value: { type } })
     threadables.allocateData(th)
     threadables.assign(th, { value })
     assertStrictEquals(value, th.value)
@@ -36,7 +36,7 @@ Deno.test('threadable: should be able to define enum properties', () => {
 })
 
 Deno.test('threadable: can define function to validate before setting', () => {
-    const positivePrototype = threadables.prepareThreadables({}, {
+    const positivePrototype = threadables.declare({}, {
         value: {
             type: 'Float32',
             check(value: number) { if (value < 0) throw 'must be positive' }
@@ -61,7 +61,7 @@ Deno.test('threadable: must be able to share threadable properties with other ob
             threadables.assign(this, { value })
         }
     }
-    threadables.prepareThreadables(
+    threadables.declare(
         X.prototype,
         { value: { type: 'Uint8' } }
     )
@@ -82,7 +82,7 @@ Deno.test('threadable: should be able to declare private', () => {
             threadables.assign(this, { value })
         }
     }
-    threadables.prepareThreadables(
+    threadables.declare(
         X.prototype,
         { value: { type: 'Uint8', private: true } }
     )

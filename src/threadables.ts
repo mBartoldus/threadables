@@ -9,10 +9,10 @@ function getByteStride(type: string | string[]) {
 }
 
 /**
- * Defines getters and setters for an object/prototype's threadable properties).
+ * Defines getters and setters for a prototype's threadable properties.
  * Instances will require data to be allocated using ```allocateData```.
  */
-export function prepareThreadables(
+export function declare(
     prototype: any,
     objMeta: ObjectMetadata,
 ) {
@@ -40,7 +40,7 @@ export function prepareThreadables(
 
 /**
  * Allocates data for an object with threadable properties.
- * May be called before ```prepareThreadable``` so long as byteLength is provided.
+ * May be called before ```declare``` so long as byteLength is provided.
  */
 export function allocateData(instance: any): void
 export function allocateData(instance: any, targetPrototype: any): void
@@ -49,6 +49,19 @@ export function allocateData(instance: any, l = instance[_byteLength]) {
     const byteLength = typeof l === 'number' ? l : l[_byteLength]
     const sab = new SharedArrayBuffer(byteLength)
     instance[_data] = new DataView(sab)
+}
+
+/**
+ * Defines an object's threadable properties and allocates data.
+ * 
+ * > If the object is an instance of a class with inherited threadable properties, DO NOT USE THIS FUNCTION. Instead:
+ * > - ```declare``` threadable properties on the class prototypes
+ * > - call ```allocateData(this, new.target.prototype)``` in the base class constructor.
+ */
+export function prepareObject(object: any, metadata: ObjectMetadata){
+    declare(object, metadata)
+    allocateData(object)
+    return object
 }
 
 export function get(instance: any, k: string) {
