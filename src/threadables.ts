@@ -53,7 +53,7 @@ export function allocateData(instance: any, targetPrototype = instance) {
  * > - ```declare``` threadable properties on the class prototypes.
  * > - call ```allocateData(this, new.target.prototype)``` in the base class constructor.
  */
-export function prepareObject(object: any, metadata: ObjectMetadata){
+export function prepareObject(metadata: ObjectMetadata, object: any = {}){
     declare(object, metadata)
     allocateData(object)
     return object

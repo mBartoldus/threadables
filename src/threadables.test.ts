@@ -100,7 +100,7 @@ Deno.test('threadable: prepareObject should declare properties and allocate data
         preferredTemperature: { type: 'Float32' }
     }
 
-    const person = threadables.prepareObject({}, personMetadata)
+    const person = threadables.prepareObject(personMetadata)
     person.favoriteDrink = 'tea'
     person.preferredTemperature = 50.5
 
@@ -118,7 +118,7 @@ Deno.test('threadable: manifestObject should declare properties and accept data'
         preferredTemperature: { type: 'Float32' }
     }
 
-    const person = threadables.prepareObject({}, personMetadata)
+    const person = threadables.prepareObject(personMetadata)
     person.favoriteDrink = 'tea'
     person.preferredTemperature = 50.5
 
