@@ -50,7 +50,7 @@ export function allocateData(instance: any, targetPrototype = instance) {
 /**
  * Defines an object's threadable properties and allocates data.
  * > If the object is an instance of a class with inherited threadable properties, DO NOT USE THIS FUNCTION. Instead:
- * > - ```declare``` threadable properties on the class prototypes
+ * > - ```declare``` threadable properties on the class prototypes.
  * > - call ```allocateData(this, new.target.prototype)``` in the base class constructor.
  */
 export function prepareObject(object: any, metadata: ObjectMetadata){
@@ -79,7 +79,7 @@ export function set(instance: any, k: string, value: any) {
 
 /**
  * Manually sets multiple threadable properties, including readonly ones.
- * > Does NOT bypass checks. To bypass checks on a particular property, use ```set```
+ * > Does NOT bypass checks. To bypass checks on a particular property, use ```set```.
  */
 export function assign(instance: any, values: Record<string, any> = {}) {
     for (const k in values) {
@@ -101,7 +101,7 @@ export function share(instance: any): DataView {
 
 /**
  * Accepts a dataview to be used for object's threadable properties.
- * > Must be used in conjunction with `declare`
+ * > Must be used in conjunction with `declare`.
  */
 export function accept<Th extends object>(instance: Th, data: DataView): Th {
     (instance as any)[_data] = data
