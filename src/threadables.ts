@@ -107,3 +107,15 @@ export function accept<Th extends object>(instance: Th, data: DataView): Th {
     (instance as any)[_data] = data
     return instance
 }
+
+/**
+ * Uses a dataview and metadata to instantiate an object with shared properties.
+ * > This is the same as using `declare` and then `accept`.
+ * > If you will instantiate multiple objects of the same class within a given worker, DO NOT USE THIS FUNCTION. Instead:
+ * > - ```declare``` threadable properties on the class prototypes.
+ * > - call ```accept(instance, data)``` on the instance, preferably within its constructor.
+ */
+export function manifestObject<Th extends object>(data: DataView, metadata: ObjectMetadata<Th>): Th {
+    const object = declare({}, metadata)
+    return accept(object, data)
+}

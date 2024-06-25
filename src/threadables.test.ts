@@ -111,3 +111,20 @@ Deno.test('threadable: prepareObject should declare properties and allocate data
     assertStrictEquals(samePerson.preferredTemperature, 50.5)
     assertStrictEquals(threadables.share(samePerson), threadables.share(person))
 })
+
+Deno.test('threadable: manifestObject should declare properties and accept data', () => {
+    const personMetadata: threadables.ObjectMetadata = {
+        favoriteDrink: { type: ['water', 'tea', 'coffee'] },
+        preferredTemperature: { type: 'Float32' }
+    }
+
+    const person = threadables.prepareObject({}, personMetadata)
+    person.favoriteDrink = 'tea'
+    person.preferredTemperature = 50.5
+
+    const samePerson = threadables.manifestObject(threadables.share(person), personMetadata)
+
+    assertStrictEquals(samePerson.favoriteDrink, 'tea')
+    assertStrictEquals(samePerson.preferredTemperature, 50.5)
+    assertStrictEquals(threadables.share(samePerson), threadables.share(person))
+})
