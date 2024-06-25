@@ -8,7 +8,7 @@ This library also includes the function `makeWorker`, which allows you to run wo
 ### Making a threadable object
 
 Start by defining the object's metadata. This should be defined in a file which can be imported by both the main thread and workers.
-```
+```javascript
 export const personMetadata = {
     favoriteDrink: { type: ['water', 'tea', 'coffee'] },
     preferredTemperature: { type: 'Float32' }
@@ -16,7 +16,7 @@ export const personMetadata = {
 ```
 
 In the worker script, import the metadata and add a listener in anticipation of the object's shared `DataView`.
-```
+```javascript
 import * as threadables from 'threadables.js'
 import { personMetadata } from './personMetadata.js'
 
@@ -27,7 +27,7 @@ addEventListener('message', e=>{
 ```
 
 In the main thread, start the worker, prepare the object and share its `DataView` to the worker.
-```
+```javascript
 import * as threadables from 'threadables.js'
 import { personMetadata } from './personMetadata.js'
 const worker = new Worker(import.meta.resolve('./worker.js)', { type: 'module' })
@@ -46,7 +46,7 @@ In the example above, the value of `person.favoriteDrink` will be changed from t
 ### Making a threadable class
 
 Using the same metadata as before, we can define a threadable class. In the worker thread, we `declare` threadable properties on the prototype, and we can use `accept` in the constructor, to accept a `DataView` which had been allocated on the main thread.
-```
+```javascript
 import * as threadables from 'threadables.js'
 import { personMetadata } from './personMetadata.js'
 
@@ -62,7 +62,7 @@ addEventListener('message', e=>{
 ```
 
 On the main thread, we also `declare` threadable properties on the prototype, and we can use `allocateData` in the constructor. We can also pass `new.target.prototype` to `allocateData`, allowing the class to be extended with more threadable properties in its subclasses.
-```
+```javascript
 import * as threadables from 'threadables.js'
 import { personMetadata } from './personMetadata.js'
 const worker = new Worker(import.meta.resolve('./worker.js)', { type: 'module' })
@@ -86,7 +86,10 @@ for(const person of people)
 
 setTimeout(()=>{
     for(const {favoriteDrink, preferredTemperature} of people)
-        console.log(`i like to drink ${favoriteDrink} at ${preferredTemperature} degrees`)
+        console.log(`
+            i like to drink ${favoriteDrink}
+            at ${preferredTemperature} degrees.
+        `)
     worker.terminate()
 }, 1000)
 ```
@@ -96,7 +99,7 @@ setTimeout(()=>{
 - To define a readonly property, add `writable: false` to the property's metadata. You can set readonly properties using `threadables.set` and `threadables.assign`.
 - To define a private property, add `private: true`. Private properties are accessible using `threadables.get`.
 - For mutable properties with restricted values, use a `check` function to throw errors for invalid inputs.
-```
+```javascript
 export const personMetadata = {
     eyeColor: {
         type: ["black", "brown", "blue", "green", "glowing"],
@@ -119,7 +122,7 @@ export const personMetadata = {
 ```
 
 Checks can be bypassed using `threadables.set`.
-```
+```javascript
 function drinkMagicPotion(person) {
     threadables.set(magicPerson, 'eyeColor', 'glowing')
 }
