@@ -15,7 +15,7 @@ function getByteStride(type: string | string[]) {
 export function declare(
     prototype: any,
     objMeta: ObjectMetadata,
-) {
+): typeof prototype {
     prototype[_meta] ??= {}
     prototype[_byteLength] ??= 0
 
@@ -42,7 +42,7 @@ export function declare(
  * Allocates data for an object with threadable properties.
  * May be called before ```declare``` so long as target prototype is provided.
  */
-export function allocateData(instance: any, targetPrototype = instance) {
+export function allocateData(instance: any, targetPrototype = instance): void {
     const sab = new SharedArrayBuffer(targetPrototype[_byteLength])
     instance[_data] = new DataView(sab)
 }
@@ -53,13 +53,13 @@ export function allocateData(instance: any, targetPrototype = instance) {
  * > - ```declare``` threadable properties on the class prototypes.
  * > - call ```allocateData(this, new.target.prototype)``` in the base class constructor.
  */
-export function prepareObject(metadata: ObjectMetadata, object: any = {}){
+export function prepareObject(metadata: ObjectMetadata, object: any = {}): any{
     declare(object, metadata)
     allocateData(object)
     return object
 }
 
-export function get(instance: any, k: string) {
+export function get(instance: any, k: string): any {
     const { byteOffset, type } = instance[_meta][k]
     if (!Array.isArray(type))
         return instance[_data][`get${type}`](byteOffset)
@@ -69,7 +69,7 @@ export function get(instance: any, k: string) {
 /**
  * Manually sets an object's threadable property, bypassing checks (so long as the value is valid for the datatype).
  */
-export function set(instance: any, k: string, value: any) {
+export function set(instance: any, k: string, value: any): void {
     const { byteOffset, type } = instance[_meta][k]
     if (!Array.isArray(type))
         return instance[_data][`set${type}`](byteOffset, value)
@@ -81,7 +81,7 @@ export function set(instance: any, k: string, value: any) {
  * Manually sets multiple threadable properties, including readonly ones.
  * > Does NOT bypass checks. To bypass checks on a particular property, use ```set```.
  */
-export function assign(instance: any, values: Record<string, any> = {}) {
+export function assign(instance: any, values: Record<string, any> = {}): void {
     for (const k in values) {
         if (k in instance[_meta]) {
             instance[_meta][k].check?.(values[k])
