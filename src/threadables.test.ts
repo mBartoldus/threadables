@@ -130,8 +130,7 @@ Deno.test('threadable: manifestObject should declare properties and accept data'
 })
 
 Deno.test('threadable: data should be shared across workers', async () => {
-
-    const worker = threadables.makeWorker(`
+    const script = `
         import * as threadables from '${import.meta.resolve('./mod.ts')}'
 
         addEventListener('message', e=>{
@@ -139,7 +138,11 @@ Deno.test('threadable: data should be shared across workers', async () => {
             x.x = Math.random()
             postMessage(x.x)
         })
-    `)
+    `
+    const blob = new Blob([script], { type: 'text/javascript' })
+    const url = URL.createObjectURL(blob)
+    const worker = new Worker(url, { type: 'module' })
+    URL.revokeObjectURL(url)
 
     const x = threadables.prepareObject({ x: { type: 'Float32' } })
     x.x = Math.random()
