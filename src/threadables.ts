@@ -59,6 +59,9 @@ export function prepareObject(metadata: ObjectMetadata, object: any = {}): any{
     return object
 }
 
+/**
+ * Returns the value of an object's threadable property, including private properties.
+ */
 export function get(instance: any, k: string): any {
     const { byteOffset, type } = instance[_meta][k]
     if (!Array.isArray(type))
