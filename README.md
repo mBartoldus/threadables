@@ -14,7 +14,7 @@ export const personMetadata = {
 
 In the worker script, import the metadata and add a listener in anticipation of the object's shared `DataView`.
 ```javascript
-import * as threadables from 'threadables.js'
+import * as threadables from '@mbartoldus/threadables'
 import { personMetadata } from './personMetadata.js'
 
 addEventListener('message', e=>{
@@ -25,7 +25,7 @@ addEventListener('message', e=>{
 
 In the main thread, start the worker, prepare the object and share its `DataView` to the worker.
 ```javascript
-import * as threadables from 'threadables.js'
+import * as threadables from '@mbartoldus/threadables'
 import { personMetadata } from './personMetadata.js'
 const worker = new Worker(import.meta.resolve('./worker.js)', { type: 'module' })
 
@@ -44,7 +44,7 @@ In the example above, the value of `person.favoriteDrink` will be changed from t
 
 Using the same metadata as before, we can define a threadable class. In the worker thread, we `declare` threadable properties on the prototype, and we can use `accept` in the constructor, to accept a `DataView` which had been allocated on the main thread.
 ```javascript
-import * as threadables from 'threadables.js'
+import * as threadables from '@mbartoldus/threadables'
 import { personMetadata } from './personMetadata.js'
 
 class Person {
@@ -60,7 +60,7 @@ addEventListener('message', e=>{
 
 On the main thread, we also `declare` threadable properties on the prototype, and we can use `allocateData` in the constructor. We can also pass `new.target.prototype` to `allocateData`, allowing the class to be extended with more threadable properties in its subclasses.
 ```javascript
-import * as threadables from 'threadables.js'
+import * as threadables from '@mbartoldus/threadables'
 import { personMetadata } from './personMetadata.js'
 const worker = new Worker(import.meta.resolve('./worker.js)', { type: 'module' })
 
