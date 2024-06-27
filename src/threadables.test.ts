@@ -153,3 +153,12 @@ Deno.test('threadable: data should be shared across workers', async () => {
 
     worker.terminate()
 })
+
+Deno.test('threadable: should allow boolean enums', () => {
+    const x = threadables.prepareObject({ x: { type: [true, false] } })
+    x.x = true
+    assertStrictEquals(x.x, true)
+    x.x = false
+    assertStrictEquals(x.x, false)
+    assertThrows(()=>x.x=10)
+})
