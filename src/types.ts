@@ -2,7 +2,7 @@
  * Unit of metadata for preparing a threadable property.
  */
 export type PropertyMetadata = {
-    type: string[]
+    type: string[] | any[]
     | 'Int8' | 'Uint8'
     | 'Int16' | 'Uint16'
     | 'Int32' | 'Uint32'
